@@ -37,6 +37,7 @@ function eachEvent(events, cb, iterator) {
  * @description
  * @param events 需要执行的事件数组
  * @param args 统一参数
+ * @return Boolean 是否成功全部执行
  */
 function triggerHandlers(events, args) {
     let stopped = false,
@@ -73,7 +74,8 @@ class Handler {
 /** Mediator
  * @description
  *  事件队列机制
- *  每个Uploader都有一个mediator单例
+ *  每个实现了mediator的对象，其注册事件存储在this._events 属性上
+ *
  * finishedTodo 1-使用装饰器机制实现此功能---finish
  * @createDate 2018/6/12
  * @author heptagonnnn
@@ -81,6 +83,21 @@ class Handler {
 export default function Mediator(target) {
     const proto = target.prototype;
 
+
+    /** on
+     * @description 事件注册，规定回调
+     * ```
+     * tmp.ctx = ctx
+     * tmp.ctx2 = ctx ? this: ctx;
+
+     * ```
+     * 此段表明，ctx用于findHandler校验，ctx2，用于apply函数使用
+     *
+     * @param name: String 以'，'分开可获得遍历数组
+     * @param cb: Function 回调函数
+     * @param ctx: Object 执行上下文
+     *
+     */
     proto.on = function (name, cb, ctx) {
         let set = this._events || (this._events = []);
 
@@ -90,7 +107,7 @@ export default function Mediator(target) {
         eachEvent(name, cb, (name, cb) => {
 
             const tmp = new Handler(name, cb, ctx, set.length);
-            !tmp.ctx && (tmp.ctx2 = this);
+            tmp.ctx2 = ctx ? this : ctx;
             set.push(tmp);
 
         });
@@ -98,6 +115,14 @@ export default function Mediator(target) {
         return this;
     };
 
+
+    /** once
+     * @description 注册一个一次性调用事件，调用一次直接off()
+     * @param name String
+     * @param cb Function
+     * @param ctx Object
+     *
+     */
     proto.once = function (name, cb, ctx) {
         if (!cb) {
             return this;
@@ -116,6 +141,14 @@ export default function Mediator(target) {
     };
 
 
+    /** off
+     * @description 事件注销，与removeEventListener相同，匿名函数注册的事件无法被手动注销
+     * 是通过逐一检测name，cb，ctx实现上述功能的
+     * @param name String
+     * @param cb Function
+     * @param ctx Object
+     *
+     */
     proto.off = function (name, cb, ctx) {
         let events = this._events;
         if (!events) {
@@ -135,9 +168,16 @@ export default function Mediator(target) {
     };
 
 
+
+    /** trigger
+     * @description 事件触发
+     * 每一次触发都会自动触发名叫'all'的事件，此事件回调中包含了trigger的type
+     *
+     * @param type String
+     * @return Boolean 若调用失败，则返回false
+     */
     proto.trigger = function (type) {
         let args, events, allEvents;
-
         if (!this._events || !type) {
             return this;
         }
