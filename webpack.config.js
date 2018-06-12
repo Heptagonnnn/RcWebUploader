@@ -20,7 +20,8 @@ module.exports = {
             {test: /\.js$/, use: [{
                     loader: 'babel-loader',
                     options:{
-                        presets: ['react', 'stage-3']
+                        presets: ['react', 'stage-2', 'stage-3'],
+                        plugins: ['transform-decorators-legacy']
                     }
                 }]},
             {test: /\.jsx$/, use: [{
