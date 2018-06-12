@@ -1,0 +1,11 @@
+
+# output file
+/build
+/dist
+
+# modules
+/node_modules
+
+
+# ide config
+/.idea
