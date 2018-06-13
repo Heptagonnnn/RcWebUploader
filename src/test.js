@@ -1,7 +1,7 @@
 import React from 'react';
 import Mediator from "./mediator/Mediator";
-
-
+import {addBtn} from "./dom/dom";
+import {File} from "./file/file";
 
 
 @Mediator
@@ -14,23 +14,14 @@ class TestClass {
 
 export class TestComponent extends React.Component {
     render() {
-
-        const foo = new TestClass(1230);
-        foo.once('test1', () => {
-            console.log(2);
-        });
-
-        foo.on('test', function() {console.log(1)});
-
-
-        foo.trigger('test');
-        // foo.off('test');
-        // console.log(foo);
-
-        // foo.trigger('test1');
-        console.log(foo);
         return (
-            <div>test</div>
+            <div>
+                <input type="file" onChange={e => {
+                    const src = e.target.files[0];
+                    const file = new File(src);
+                    console.log(file);
+                }}/>
+            </div>
         )
     }
 }

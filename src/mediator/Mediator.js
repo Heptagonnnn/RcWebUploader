@@ -1,4 +1,4 @@
-import {MEDIATOR_SEPARATOR} from "./constant";
+import {MEDIATOR_SEPARATOR} from "../constant/MediatorConstant";
 
 
 /** findHandlers
@@ -8,7 +8,7 @@ import {MEDIATOR_SEPARATOR} from "./constant";
  * @param cb: Function 匹配callback
  * @param ctx: Object 匹配context
  * @return Array
- * todo 1源码处有一个 ._cb作用暂时不明?可能是用与findHandlers有cb参数，切是通过once注册的事件的校验？？？
+ * todo 1源码处有一个 ._cb作用暂时不明?可能是用于findHandlers有cb参数，且是通过once注册的事件的校验？？？
  */
 function findHandlers(src, name, cb, ctx) {
     return src.filter((handler) => {
