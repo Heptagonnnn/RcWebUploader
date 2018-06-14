@@ -16,9 +16,10 @@ export class TestComponent extends React.Component {
     render() {
         return (
             <div>
-                <input type="file" onChange={e => {
+                <input type="file"  multiple="multiple" onChange={e => {
                     const src = e.target.files[0];
                     const file = new File(src);
+                    file.makeChunks();
                     console.log(file);
                 }}/>
             </div>

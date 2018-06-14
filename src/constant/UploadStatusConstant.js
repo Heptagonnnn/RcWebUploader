@@ -3,7 +3,7 @@
 
 export const DEFAULT_FILE_OPTIONS = {
     chunk: true,
-    chunkSize: 2 * 1024,
+    chunkSize: 2 * 1024 * 1024,
     md5: true
 };
 
