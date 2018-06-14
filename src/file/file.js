@@ -4,85 +4,80 @@ import SparkMD5 from "../util/md5";
 
 class FileChunk {
     constructor(source, md5, status) {
+        console.log(source);
         this.source = source;
         this.md5 = md5;
 
         // 同file
-        this.status = UPLOAD_STATUS.PENDING;
+        this.status = status || UPLOAD_STATUS.PENDING;
 
     }
 }
 
 export class File {
     constructor(source, options) {
-        this.source = source;
+        this.source = source || {};
         this.options = {...DEFAULT_FILE_OPTIONS, ...options};
 
         !this.options.chunk && (this.options.chunkSize = this.source.size);
 
         // todo localstorage检测决定初始状态，暂无
 
-        this.stataus = UPLOAD_STATUS.PENDING;
+        this.source.status = UPLOAD_STATUS.PENDING;
 
         //分片后的队列
-        this.pending = [];
-        //
-        // const tmp = new FileReader();
-        //
-        // tmp.readAsArrayBuffer(source);
-        // console.log(tmp);
-        // const spark = new SparkMD5.ArrayBuffer();
-        // spark.append(tmp);
-        // console.log(spark.end());
+        this.chunkArray = [];
     }
 
+    //todo 利用缓存做检测 checkChunks() {}
 
-    makeChunks() {
+    async makeChunks() {
         const _this = this;
         const fr = new FileReader();
         const spark = new SparkMD5.ArrayBuffer();
+        const allSpark = new SparkMD5.ArrayBuffer();
 
         const blob = this.source;
         console.log(this.options);
         const {chunk, chunkSize} = this.options;
 
-        console.log(chunkSize);
         let start = 0, end, chunkCount, currentChunk = 0;
 
         chunkCount = Math.ceil(blob.size / chunkSize);
 
-        // fr.readAsArrayBuffer(blob);
-        //
-        // spark.append(fr);
-        // this.md5 = spark.end();
-        // if (!chunk) {
-        //     return null;
-        // }
-
-        function loadNext() {
+        function loadNext(resolve, reject) {
             start = currentChunk * chunkSize;
             end = Math.min(start + chunkSize, blob.size);
-
-            fr.onload = function(e) {
-                console.log(1);
+            _this.source.status = 1;
+            fr.onload = function (e) {
                 spark.append(e.target.result);
-                console.log(spark);
+                allSpark.append(e.target.result);
+                _this.chunkArray.push(new FileChunk(e.target.result, spark.end(), 2));
+            };
+
+            fr.onerror = function (e) {
+                reject(e);
             };
 
 
-            fr.onloadend = function(e) {
+            fr.onloadend = function (e) {
                 fr.onloadend = fr.onload = null;
                 if (++currentChunk < chunkCount) {
-                    setTimeout(loadNext, 1);
+                    loadNext(resolve, reject);
                 } else {
-                    setTimeout(function() {
-                        _this.md5 = spark.end();
-                    })
+                    // setTimeout(function () {
+                    _this.source.status = 2;
+                    _this.source.md5 = allSpark.end();
+                    resolve(_this);
+                    // })
                 }
             };
 
             fr.readAsArrayBuffer(blob.slice(start, end));
         }
-        loadNext();
+
+        return await new Promise((resolve, reject) => {
+            loadNext(resolve, reject);
+        });
     }
 }
