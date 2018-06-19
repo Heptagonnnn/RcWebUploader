@@ -15,6 +15,7 @@ class FileChunk {
 }
 
 export class File {
+
     constructor(source, options) {
         this.source = source || {};
         this.options = {...DEFAULT_FILE_OPTIONS, ...options};
@@ -32,6 +33,7 @@ export class File {
     //todo 利用缓存做检测 checkChunks() {}
 
     async makeChunks() {
+        console.time('start');
         const _this = this;
         const fr = new FileReader();
         const spark = new SparkMD5.ArrayBuffer();
@@ -65,11 +67,10 @@ export class File {
                 if (++currentChunk < chunkCount) {
                     loadNext(resolve, reject);
                 } else {
-                    // setTimeout(function () {
                     _this.source.status = 2;
                     _this.source.md5 = allSpark.end();
+                    console.timeEnd('start');
                     resolve(_this);
-                    // })
                 }
             };
 
