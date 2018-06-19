@@ -20,6 +20,8 @@ function findHandlers(src, name, cb, ctx) {
     })
 }
 
+
+
 /** eachEvent
  * @description 对events数组遍历执行iterator,参数为events数组的每个元素，和统一回调cb
  * @param events: Array 事件数组
