@@ -16,7 +16,7 @@ class FileChunk {
 
 export class File {
 
-    constructor(source, options) {
+    constructor(options) {
         this.source = source || {};
         this.options = {...DEFAULT_FILE_OPTIONS, ...options};
 
@@ -29,6 +29,16 @@ export class File {
         //分片后的队列
         this.chunkArray = [];
     }
+
+    fileInput = (files) => {
+        this.files = files;
+    };
+
+
+    fileOutput = () => {
+
+    };
+
 
     //todo 利用缓存做检测 checkChunks() {}
 

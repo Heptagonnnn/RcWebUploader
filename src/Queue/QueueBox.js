@@ -10,6 +10,7 @@ export class QueueBox {
         this.register('addFile', (files) => {
             this.queue.fileInput(files);
             this.queue.fileGrep();
+            return this.trigger('Queue.outputFile');
         });
         this.register('outputFile', () => {
             return this.queue.fileOutput();

@@ -12,6 +12,7 @@ export class Uploader {
     constructor(options, Commander = Commander) {
         this.options = options;
         this.Commander = Commander;
+        this.init();
     }
 
     init() {

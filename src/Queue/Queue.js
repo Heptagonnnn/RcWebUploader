@@ -13,19 +13,11 @@ export class Queue {
         // options.maxSize < 0 && (options.maxSize = 0);
         this.options = options;
     }
-    //
-    // registerAll = () => {
-    //     this.register('addFile', (files) => {
-    //         this.filesInput(files);
-    //         this.filesGrep();
-    //     })
-    // };
-
 
     fileInput = (files) => {
         !(files instanceof Array) && (files = [files]);
-
         this.files = files;
+        return this;
     };
 
     fileGrep = () => {
@@ -51,6 +43,7 @@ export class Queue {
             return maxSizeValid && typeValid;
 
         });
+        return this;
     };
 
 
