@@ -7,7 +7,7 @@ export class Commander {
     但一定包括事件
     init
     destroy
-    想要让组件的事件能被触发，需要在组件内request，然后在别的组件通过trigger触发
+    想要让组件的事件能被触发，需要在组件内register，然后在别的组件通过trigger触发
      */
     constructor() {
         this.modulePool = {
@@ -19,32 +19,10 @@ export class Commander {
     }
 
 
-    addView(viewName, module) {
-        this.modulePool.View[viewName] = module;
-    }
-
-    setView(viewName, module) {
-        this.modulePool.View = {
-            [viewName]: module
-        };
-    }
-
-    deleteView(viewName) {
-        delete this.modulePool.View[viewName];
-    }
-
-    setModule(moduleName, module) {
-        if (moduleName === 'View') {
-
-        } else {
-            module.register = this.register(moduleName);
-            module.trigger = this.trigger();
-        }
-    }
-
-    deleteModule(moduleName) {
-        this.modulePool[moduleName] = {};
-    }
+    inject = (moduleName, module) => {
+        module.prototype.register = this.register(moduleName);
+        module.prototype.trigger = this.trigger();
+    };
 
     register = (moduleName) => {
         return (eventName, cb) => {
@@ -53,13 +31,13 @@ export class Commander {
     };
 
     trigger = () => {
-        return function(modulePath, ...args) {
+        return (modulePath, ...args) => {
             const pathArray = modulePath.split('.');
-            let srcFunction = this;
+            let srcFunction = this.modulePool;
             pathArray.forEach((v) => {
                 srcFunction = srcFunction[v];
             });
-            srcFunction.apply(this, args);
+            return srcFunction.apply(this, args);
         }
     };
 }

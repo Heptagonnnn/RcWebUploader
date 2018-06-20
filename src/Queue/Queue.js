@@ -1,30 +1,40 @@
 export class Queue {
-    constructor(files = [], options = {
+    constructor(options = {
         maxFileCounts: 0,
         maxSize: 0,
         type: '',
     }) {
 
 
-        if (!(files instanceof Array)) {
-            files = [files];
-        }
-
-
+        // if (!(files instanceof Array)) {
+        //     files = [files];
+        // }
         // options.maxFileCounts < 0 && (options.maxFileCounts = 0);
         // options.maxSize < 0 && (options.maxSize = 0);
-
-        this.files = files;
         this.options = options;
     }
+    //
+    // registerAll = () => {
+    //     this.register('addFile', (files) => {
+    //         this.filesInput(files);
+    //         this.filesGrep();
+    //     })
+    // };
 
-    filesGrep = () => {
+
+    fileInput = (files) => {
+        !(files instanceof Array) && (files = [files]);
+
+        this.files = files;
+    };
+
+    fileGrep = () => {
 
         let counter = 0;
 
         const {maxSize, maxFileCounts, type} = this.options;
 
-        this.files = this.files.filter((file) => {
+        this.resultFiles = this.files.filter((file) => {
             let maxSizeValid = true;
             let typeValid = true;
 
@@ -44,8 +54,7 @@ export class Queue {
     };
 
 
-    filesExport = () => {
-        this.resultFiles = this.resultFiles || this.files;
+    fileOutput = () => {
         return [...this.resultFiles];
     }
 }
