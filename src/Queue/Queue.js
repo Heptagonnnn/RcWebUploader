@@ -15,6 +15,7 @@ export class Queue {
     }
 
     fileInput = (files) => {
+        console.log(files);
         !(files instanceof Array) && (files = [files]);
         this.files = files;
         return this;
