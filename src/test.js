@@ -1,10 +1,10 @@
 import React from 'react';
-import {Uploader} from "./Uploader/Uploader";
+import RcUploader from "./rc-uploader";
 
 
 export class TestComponent extends React.Component {
   render() {
-    const uploader = new Uploader();
+    const uploader = new RcUploader();
     return (
       <div>
         <input type="file" multiple="multiple" onChange={e => {

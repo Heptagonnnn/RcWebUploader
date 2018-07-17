@@ -6,7 +6,7 @@ module只支持4种 View， Queue， File， Request
 import {Queue} from "../Queue/Queue";
 import Runtime from "../Runtime";
 
-export class Uploader {
+export default class RcUploader {
   constructor() {
     this.__Runtime = new Runtime();
     this.__Queue = new Queue();

@@ -37,8 +37,18 @@ export class Queue {
         this.outputQueue();
     }
 
-    outputQueue = () => {
-        console.log(this.resultFiles);
-        return [...this.resultFiles];
+    outputQueue() {
+        const beforeOutputQueue = this.beforeOutputQueue(files);
+
+        beforeOutputQueue.then(() => {
+            console.log(this.resultFiles);
+            return [...this.resultFiles];
+        })
+
+
+    }
+
+    beforeOutputQueue(files) {
+        return Promise.resolve(files);
     }
 }
