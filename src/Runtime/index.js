@@ -16,7 +16,8 @@ export default class Runtime {
 
   constructor() {
     /* 组件池 */
-    model = {};
+    this.model = {};
+    this.model['Runtime'] = this;
   }
 
 
@@ -58,7 +59,17 @@ export default class Runtime {
    * @param args 参数
    * todo 路径化解析
    */
-  trigger(name, method, args) {
+  trigger = (name, method, args) => {
     return this.model[name][method](args);
+  };
+
+
+  /**function catchGlobalError
+   * @description
+   *
+   */
+  catchGlobalError(err) {
+    console.log(err);
   }
+
 }
